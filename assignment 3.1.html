@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alert Box</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: #fff;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    nav {
+      display: flex;
+      height: 84px;
+      border-top: 4px solid #fafafa;
+      border-bottom: 1px solid #d9dde3;
+    }
+
+    nav a {
+      display: grid;
+      place-items: center;
+      height: 80px;
+      padding: 0 23px;
+      border-bottom: 3px solid transparent;
+      color: #687181;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    nav a.active {
+      border-color: #2463f6;
+      color: #2463f6;
+    }
+
+    main {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      font: 700 20px Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    #openDialog {
+      padding: 16px 24px;
+      background: #e5e5e5;
+      color: #3781fb;
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, .25);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .16s ease, visibility .16s ease;
+    }
+
+    .modal.open { opacity: 1; visibility: visible; }
+
+    .dialog {
+      width: min(638px, 100%);
+      padding: 35px 34px 34px;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 18px 28px rgba(0, 0, 0, .23);
+      transform: translateY(8px);
+      transition: transform .16s ease;
+    }
+
+    .modal.open .dialog { transform: translateY(0); }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .dialog p {
+      margin: 0 0 25px;
+      color: #6b7484;
+      font-size: 20px;
+      line-height: 29px;
+    }
+
+    #closeDialog {
+      padding: 15px 24px;
+      background: #d9e7ff;
+      color: #24458c;
+    }
+  </style>
+</head>
+<body>
+  <nav aria-label="Assignments">
+    <a class="active" href="assignment 3.1.html">Alert Box</a>
+    <a href="assignment 3.2.html">Todo</a>
+    <a href="assignment 3.3.html">Form</a>
+  </nav>
+
+  <main>
+    <button id="openDialog" type="button">Open dialog</button>
+  </main>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <section class="dialog">
+      <h1 id="dialogTitle">Payment successful</h1>
+      <p>Your payment has been successfully submitted. We’ve sent<br>you an email with all of the details of your order.</p>
+      <button id="closeDialog" type="button">Got it, thanks!</button>
+    </section>
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    const openButton = document.getElementById('openDialog');
+    const closeButton = document.getElementById('closeDialog');
+
+    function openDialog() {
+      modal.classList.add('open');
+      closeButton.focus();
+    }
+
+    function closeDialog() {
+      modal.classList.remove('open');
+      openButton.focus();
+    }
+
+    openButton.addEventListener('click', openDialog);
+    closeButton.addEventListener('click', closeDialog);
+    modal.addEventListener('click', event => {
+      if (event.target === modal) closeDialog();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && modal.classList.contains('open')) closeDialog();
+    });
+  </script>
+</body>
+</html>

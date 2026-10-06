@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo App</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: #fff;
+      color: #050505;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    nav {
+      display: flex;
+      height: 84px;
+      border-top: 4px solid #fafafa;
+      border-bottom: 1px solid #d9dde3;
+    }
+
+    nav a {
+      display: grid;
+      place-items: center;
+      height: 80px;
+      padding: 0 23px;
+      border-bottom: 3px solid transparent;
+      color: #687181;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    nav a.active { border-color: #2463f6; color: #2463f6; }
+
+    .todo-app {
+      width: 364px;
+      max-width: calc(100% - 32px);
+      margin: 50px auto 0;
+    }
+
+    h1 {
+      margin: 0 0 26px;
+      text-align: center;
+      font-size: 34px;
+      line-height: 40px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      height: 60px;
+      padding: 0 12px;
+      border: 1px solid #c8ced7;
+      border-radius: 6px;
+      color: #111;
+      font-size: 22px;
+      outline: none;
+    }
+
+    input::placeholder { color: #9ba4b3; opacity: 1; }
+    input:focus { border: 3px solid #0764d9; padding-left: 10px; }
+
+    #todoList {
+      margin: 25px 0 22px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 42px;
+      padding: 0 4px 0 0;
+      border-bottom: 1px solid #c8ced7;
+      font-size: 22px;
+    }
+
+    .delete {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 36px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #ff4147;
+      cursor: pointer;
+    }
+
+    .delete svg {
+      width: 25px;
+      height: 29px;
+      fill: currentColor;
+    }
+
+    .create-row { margin-top: 52px; }
+
+    #addTodo {
+      margin-top: 12px;
+      padding: 15px 23px;
+      border: 0;
+      border-radius: 6px;
+      background: #3b82f6;
+      color: #fff;
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+  <nav aria-label="Assignments">
+    <a href="assignment 3.1.html">Alert Box</a>
+    <a class="active" href="assignment 3.2.html">Todo</a>
+    <a href="assignment 3.3.html">Form</a>
+  </nav>
+
+  <main class="todo-app">
+    <h1>Todo App</h1>
+    <input id="search" type="search" placeholder="Search Todo" aria-label="Search todos">
+    <ul id="todoList"></ul>
+    <div class="create-row">
+      <input id="newTodo" type="text" placeholder="Enter new todo" aria-label="New todo">
+      <button id="addTodo" type="button">Add Todo</button>
+    </div>
+  </main>
+
+  <script>
+    let todos = [
+      { id: 1, text: 'to get up early' },
+      { id: 2, text: 'to go for a walk' },
+      { id: 3, text: 'to go the gym' },
+      { id: 4, text: 'to go to the school' }
+    ];
+
+    const search = document.getElementById('search');
+    const newTodo = document.getElementById('newTodo');
+    const todoList = document.getElementById('todoList');
+    const addButton = document.getElementById('addTodo');
+
+    function renderTodos() {
+      const query = search.value.trim().toLowerCase();
+      const visibleTodos = todos.filter(todo => todo.text.toLowerCase().includes(query));
+      todoList.innerHTML = '';
+
+      visibleTodos.forEach(todo => {
+        const item = document.createElement('li');
+        item.className = 'todo-item';
+
+        const text = document.createElement('span');
+        text.textContent = todo.text;
+
+        const remove = document.createElement('button');
+        remove.className = 'delete';
+        remove.type = 'button';
+        remove.setAttribute('aria-label', `Delete ${todo.text}`);
+        remove.innerHTML = '<svg viewBox="0 0 24 28" aria-hidden="true"><path d="M8 0h8l1.5 3H23v3H1V3h5.5L8 0zm-4.5 8h17l-1.2 18a2 2 0 0 1-2 2H6.7a2 2 0 0 1-2-2L3.5 8zM8 11v12h2V11H8zm6 0v12h2V11h-2z"/></svg>';
+        remove.addEventListener('click', () => {
+          todos = todos.filter(current => current.id !== todo.id);
+          renderTodos();
+        });
+
+        item.append(text, remove);
+        todoList.appendChild(item);
+      });
+    }
+
+    function addTodo() {
+      const text = newTodo.value.trim();
+      if (!text) {
+        newTodo.focus();
+        return;
+      }
+      todos.push({ id: Date.now(), text });
+      newTodo.value = '';
+      search.value = '';
+      renderTodos();
+      newTodo.focus();
+    }
+
+    search.addEventListener('input', renderTodos);
+    addButton.addEventListener('click', addTodo);
+    newTodo.addEventListener('keydown', event => {
+      if (event.key === 'Enter') addTodo();
+    });
+
+    renderTodos();
+  </script>
+</body>
+</html>

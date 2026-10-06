@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Validation</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: #fff;
+      color: #050505;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    nav {
+      display: flex;
+      height: 84px;
+      border-top: 4px solid #fafafa;
+      border-bottom: 1px solid #d9dde3;
+    }
+
+    nav a {
+      display: grid;
+      place-items: center;
+      height: 80px;
+      padding: 0 23px;
+      border-bottom: 3px solid transparent;
+      color: #687181;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    nav a.active { border-color: #2463f6; color: #2463f6; }
+
+    .login-card {
+      width: 547px;
+      max-width: calc(100% - 32px);
+      margin: 130px auto 47px;
+      padding: 45px;
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: 0 4px 9px rgba(0, 0, 0, .16);
+    }
+
+    h1 {
+      margin: 0 0 33px;
+      font-size: 34px;
+      line-height: 1.15;
+    }
+
+    .field { margin-bottom: 27px; }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 23px;
+      font-weight: 700;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      height: 60px;
+      padding: 0 16px;
+      border: 1px solid #c8ced7;
+      border-radius: 6px;
+      color: #111;
+      font-size: 22px;
+      outline: none;
+    }
+
+    input:focus { border-color: #317df2; }
+
+    .error-message {
+      display: none;
+      margin: 8px 0 0;
+      color: #ff383e;
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    .field.invalid { margin-bottom: 28px; }
+    .field.invalid input { border: 2px solid #ff383e; }
+    .field.invalid .error-message { display: block; }
+
+    button {
+      width: 100%;
+      height: 58px;
+      margin-top: -1px;
+      border: 0;
+      border-radius: 6px;
+      background: #3b82f6;
+      color: #fff;
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+    .success {
+      display: none;
+      margin: 0 0 20px;
+      padding: 12px;
+      border-radius: 5px;
+      background: #dcfce7;
+      color: #16743b;
+      font-size: 17px;
+    }
+
+    .success.show { display: block; }
+
+    @media (max-width: 620px) {
+      .login-card { margin-top: 55px; padding: 30px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav aria-label="Assignments">
+    <a href="assignment 3.1.html">Alert Box</a>
+    <a href="assignment 3.2.html">Todo</a>
+    <a class="active" href="assignment 3.3.html">Form</a>
+  </nav>
+
+  <main>
+    <form class="login-card" id="loginForm" novalidate>
+      <h1>Login</h1>
+      <p class="success" id="success">Form submitted successfully!</p>
+
+      <div class="field" id="nameField">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" autocomplete="name">
+        <p class="error-message">Name must include a lowercase letter and a<br>number</p>
+      </div>
+
+      <div class="field" id="emailField">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email">
+        <p class="error-message">Invalid email format</p>
+      </div>
+
+      <div class="field" id="passwordField">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password">
+        <p class="error-message">Password must be at least 6 characters</p>
+      </div>
+
+      <button type="submit">Log In</button>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const success = document.getElementById('success');
+    const fields = {
+      name: {
+        input: document.getElementById('name'),
+        wrapper: document.getElementById('nameField'),
+        valid: value => /[a-z]/.test(value) && /\d/.test(value)
+      },
+      email: {
+        input: document.getElementById('email'),
+        wrapper: document.getElementById('emailField'),
+        valid: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+      },
+      password: {
+        input: document.getElementById('password'),
+        wrapper: document.getElementById('passwordField'),
+        valid: value => value.length >= 6
+      }
+    };
+
+    function validateField(field) {
+      const isValid = field.valid(field.input.value.trim());
+      field.wrapper.classList.toggle('invalid', !isValid);
+      field.input.setAttribute('aria-invalid', String(!isValid));
+      return isValid;
+    }
+
+    Object.values(fields).forEach(field => {
+      field.input.addEventListener('input', () => {
+        success.classList.remove('show');
+        if (field.wrapper.classList.contains('invalid')) validateField(field);
+      });
+    });
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const allValid = Object.values(fields).map(validateField).every(Boolean);
+      success.classList.toggle('show', allValid);
+      if (allValid) form.reset();
+    });
+  </script>
+</body>
+</html>
